@@ -1,0 +1,66 @@
+# 自主导航
+
+- 进行slam建图
+
+这里有两种方法，第二种结合了电机信息，要准一点。第二种需要将遥控手柄连接到机器人的USB上。
+
+~~~
+roslaunch wpb_home_tutorials hector_mapping.launch
+~~~
+
+~~~
+roslaunch wpb_home_tutorials gmapping.launch
+~~~
+
+- 保存地图
+
+~~~
+rosrun map_server map_saver -f map
+~~~
+
+之后，将“主文件目录”里的“map.pgm”和“map.yaml”两个文件都拷贝到“主文件目录”下的工作目录
+
+“catkin_ws/src/wpb_home/wpb_home_tutorials/maps”里
+
+
+
+- 调整速度
+
+~~~
+~/catkin_ws/src/wpb_home/wpb_home_tutorials/nav_lidar/local_planner_params.yaml
+~~~
+
+不清楚单位
+
+- 添加导航点
+
+~~~
+roslaunch waterplus_map_tools add_waypoint.launch
+~~~
+
+- 保存航点文件
+
+~~~
+rosrun waterplus_map_tools wp_saver
+~~~
+
+保存到home
+
+之后可以去home/waypoint.xml下面查看自己保存的点的坐标
+
+- 设置导航点
+
+到~/catkin_ws/src/wpb_home/wpb_home_tutorials/src里面，修改wpb_home_cruise.cpp中的导航点的坐标。编译，至此导航点设置完毕。
+
+- 启动自主导航
+
+~~~
+roslaunch wpb_home_tutorials nav_cruise.launch
+~~~
+
+输入这句话之前，先固定住机器人（按下急停开关）。点击 Rviz 界面上方工具栏条里的“2D Pos Estimate”按钮，再点击Rviz地图里，现实中机器人所在位置。这时，会出现一个绿色大箭头，代表的是机器人在初始位置的朝向。按住鼠标键不放，在屏幕上拖动画圈，可以控制绿色箭头的朝向。在 Rviz 中拖动绿色箭头，选择好朝向，松开按键，机器人模型就会定位到我们选择的位置。不停调整虚拟机器人的初始位置，直到红色的激光雷达数据点和静态障碍物的轮廓大致贴合。
+
+设置好机器人的初始位置后，松开机器人，即可自动导航。
+
+
+
