@@ -6,7 +6,7 @@ AutoTouristWindow::AutoTouristWindow(QWidget *parent) :
     ui(new Ui::AutoTouristWindow)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
+    //this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
     QDesktopWidget *desktop = QApplication::desktop();//位于屏幕中央
     move((desktop->width()-this->width())/2,(desktop->height()-this->height())/2);
 }

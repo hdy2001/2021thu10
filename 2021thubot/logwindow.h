@@ -4,6 +4,10 @@
 #include <QMainWindow>
 #include"modeswindow.h"
 #include <QDesktopWidget>
+#include <QUrl>
+//要包含下面的两个文件，必须在.pro文件中添加  QT += multimedia  multimediawidgets
+#include <QMediaPlayer>
+#include <QVideoWidget>
 
 namespace Ui {
 class LogWindow;
@@ -24,6 +28,8 @@ private slots:
 
 private:
     Ui::LogWindow *ui;
+    QMediaPlayer *player;
+    QVideoWidget *videoWidget;
 };
 
 #endif // LOGWINDOW_H

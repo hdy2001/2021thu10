@@ -6,7 +6,17 @@ LogWindow::LogWindow(QWidget *parent) :
     ui(new Ui::LogWindow)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
+    //视频初始设置
+    player = new QMediaPlayer;
+    videoWidget = new QVideoWidget;
+    player->setVideoOutput(videoWidget);
+    player->setMedia(QUrl::fromLocalFile("/home/hedongyang/桌面/jirou.mp4"));
+    videoWidget->show();
+    player->play();
+    ui->verticalLayout->addWidget(videoWidget);
+
+
+    //this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
     QDesktopWidget *desktop = QApplication::desktop();//位于中央
     move((desktop->width()-this->width())/2,(desktop->height()-this->height())/2);
 }

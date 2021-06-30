@@ -6,11 +6,13 @@
 
 QT       += core gui
 
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 2021thubot
 TEMPLATE = app
-
+QT       += multimedia
+QT       += multimediawidgets
 
 SOURCES += main.cpp\
         logwindow.cpp \
@@ -30,3 +32,4 @@ FORMS    += logwindow.ui \
 
 RESOURCES += \
     image.qrc
+
