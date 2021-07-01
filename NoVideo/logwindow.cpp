@@ -7,6 +7,7 @@ LogWindow::LogWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     //视频初始设置
+    /*
     player = new QMediaPlayer;
     videoWidget = new QVideoWidget;
     player->setVideoOutput(videoWidget);
@@ -14,7 +15,7 @@ LogWindow::LogWindow(QWidget *parent) :
     videoWidget->show();
     player->play();
     ui->verticalLayout->addWidget(videoWidget);
-
+    */
 
     //this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
     QDesktopWidget *desktop = QApplication::desktop();//位于中央
