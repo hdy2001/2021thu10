@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DATUimage</class>
+ <widget class="QDialog" name="DATUimage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>-10</y>
+     <width>421</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/picture/image/d5aab856665f78081e2bb0636f18c5c0.jpeg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>270</y>
+     <width>97</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>结束导游</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_2">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>97</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>停止交互</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_voice">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>99</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>语音交互</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_place">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>200</y>
+     <width>99</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>初始位置调整</string>
+   </property>
+  </widget>
+ </widget>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
+ <connections/>
+</ui>
