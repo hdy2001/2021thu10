@@ -23,6 +23,10 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_joyCtrl_clicked();
+
+    void on_felloMe_clicked();
+
 private:
     Ui::AutoTouristWindow *ui;
 };

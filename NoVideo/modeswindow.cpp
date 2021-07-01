@@ -19,6 +19,8 @@ ModesWindow::~ModesWindow()
 void ModesWindow::on_pushButton_2_clicked()
 {
     AutoTouristWindow *m = new AutoTouristWindow;
+    //这个用来查看机器人的位置
+    system("bash -c 'source /opt/ros/kinect/setup.bash;source ~/catkin_ws/devel/setup.bash; roslaunch wpb_home_tutorials nav.launch ;bash'&");
     m->show();
     this->close();
 }

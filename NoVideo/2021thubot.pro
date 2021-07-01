@@ -11,8 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 2021thubot
 TEMPLATE = app
-QT       += multimedia
-QT       += multimediawidgets
+#QT       += multimedia
+#QT       += multimediawidgets
 
 SOURCES += main.cpp\
         logwindow.cpp \
