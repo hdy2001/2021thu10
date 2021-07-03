@@ -33,6 +33,8 @@
 *********************************************************************/
 /*!******************************************************************
  @author     ZhangWanjie
+ @author2    PanZhuoShi
+ 添加了从TXT文件读取导航点的功能、以及到目标点之后、暂停、语音播报。目前播报时间还只能手动设置，之后会尝试改成自动的。
  ********************************************************************/
 
 #include <ros/ros.h>
@@ -68,8 +70,8 @@ int ReadWayPoints(vector<Point> &ps){
     {
         for(int i=0; i< PRINT_NUM; i++)
         {
-            printf("FILE waypoints.txt open failed!");
-        }   
+            printf("FILE waypoints.txt open failed!\n");
+        }
         fclose(fp);
         return 0;
     }
@@ -84,6 +86,31 @@ int ReadWayPoints(vector<Point> &ps){
         } 
         fclose(fp);
         return pNum;
+    }
+}
+
+int ReadAudioTime(vector<int> &timeList){
+    FILE *fp = fopen("../audiotime.txt", "r");
+    if(fp == NULL) 
+    {
+        for(int i=0; i< PRINT_NUM; i++)
+        {
+            printf("FILE audioTime.txt open failed!\n");
+        }
+        fclose(fp);
+        return 0;
+    }
+    else 
+    {
+        int AudioNum = 0;
+        int t;
+        while(fscanf(fp, "%d", &t) == 1)
+        {
+            timeList.push_back(t);
+            AudioNum++;
+        } 
+        fclose(fp);
+        return AudioNum;
     }
 }
 
@@ -185,8 +212,9 @@ int main(int argc, char** argv)
     marker_pub = nh.advertise<visualization_msgs::Marker>("waypoints_marker", 100);
     
     vector<Point> ps;
-    int pNum;
-    pNum = ReadWayPoints(ps);
+    // vector<int> timeList;
+    int pNum = ReadWayPoints(ps);
+    // int AudioNum = ReadAudioTime(timeList);
     Init_WayPoints(pNum, ps);
     Init_Marker();
 
@@ -212,7 +240,6 @@ int main(int argc, char** argv)
             nWPIndex = 0;
             continue;
         }
-
         ROS_INFO("Go to the WayPoint[%d]",nWPIndex);
         ac.sendGoal(arWayPoint[nWPIndex]);
 
@@ -222,16 +249,16 @@ int main(int argc, char** argv)
         {
             ROS_INFO("Arrived at WayPoint[%d] !",nWPIndex);
             switch(nWPIndex){
-                case 0: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 1.mp3"); break;
-                case 1: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 2.mp3"); break;
-                case 2: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 3.mp3"); break;
-                case 3: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 4.mp3"); break;
-                case 4: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 5.mp3"); break;
-                case 5: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 6.mp3"); break;
-                case 6: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 7.mp3"); break;
-                case 7: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 8.mp3"); break;
-                case 8: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 9.mp3"); break;
-                case 9: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audion && play 10.mp3"); break;
+                case 0: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 1.mp3 ;bash'&"); sleep(20); break;    
+                case 1: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 2.mp3 ;bash'&"); sleep(20); break;
+                case 2: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 3.mp3 ;bash'&"); sleep(20); break;
+                case 3: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 4.mp3 ;bash'&"); sleep(20); break;
+                case 4: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 5.mp3 ;bash'&"); sleep(20); break;
+                case 5: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 6.mp3 ;bash'&"); sleep(20); break;
+                case 6: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 7.mp3 ;bash'&"); sleep(20); break;
+                case 7: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 8.mp3 ;bash'&"); sleep(20); break;
+                case 8: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 9.mp3 ;bash'&"); sleep(20); break;
+                case 9: system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd ~/catkin_ws/src/audio && play 10.mp3 ;bash'&"); sleep(20); break;
                 default: ROS_INFO("too many waypoints , no more than 10 points please~"); break;
             }  
             nWPIndex ++;
