@@ -7,9 +7,29 @@ LabCruise::~LabCruise(){
 
 }
 
+void LabCruise::TempQueue(int AmbTemp, int ObjTemp){
+    stAct newAct;
+    std::string amb, obj;
+    std::stringstream ss;
+    ss<<AmbTemp;
+    ss>>amb;
+    ss<<ObjTemp;
+    ss>>obj;
+    newAct.nAct = ACT_SPEAK;
+    newAct.strTarget = "环境温度是：" + amb + "您的体温是：" + obj;
+    newAct.nDuration = 10;
+    arAct.push_back(newAct);
+
+    newAct.nAct = ACT_MOVE;
+    newAct.fLinear_x = 0;
+    newAct.fLinear_y = 0;
+    newAct.fAngular_z = 0;
+    newAct.nDuration = 1;
+    arAct.push_back(newAct);
+}
+
 void LabCruise::SpeakQueue(){
     stAct newAct;
-
     newAct.nAct = ACT_SPEAK;
     newAct.strTarget = "您好, 我是自动化系迎新机器人小智，很高兴认识您。";
     newAct.nDuration = 5;
@@ -20,6 +40,11 @@ void LabCruise::SpeakQueue(){
     newAct.fLinear_y = 0;
     newAct.fAngular_z = 0;
     newAct.nDuration = 1;
+    arAct.push_back(newAct);
+
+    newAct.nAct = ACT_SPEAK;
+    newAct.strTarget = "共抗疫情，进入实验室请先测温";
+    newAct.nDuration = 5;
     arAct.push_back(newAct);
 }
 

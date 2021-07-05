@@ -43,27 +43,26 @@
 const int KeyWordNum = 4;
 
 // //modify this if needed
-const int PointNum = 8;
+const int ACTNUM = 8;
 
 static LabCruise LabCruiseScript;
 
 // int flag = 0;
 enum STATE
 {
-    WAIT=1, CHAT, CRUISE
+    WAIT=1, CHAT, TEMP, CRUISE
 } state;
 std::string ChatKeyWordList[KeyWordNum] = {"你好", "能做什么", "哪些功能", "家"};
+
+void ReadTemp(int &AmbTemp, int &ObjTemp){
+    //
+}
 
 void KeywordCB(const std_msgs::String::ConstPtr &msg)
 {
     switch(state){
         case WAIT:{
-            if(msg->data.find("你好") == 0) {
-                LabCruiseScript.ChatQueue(0);
-                LabCruiseScript.ShowActs();
-                LabCruiseScript.Main();
-                LabCruiseScript.Main();
-                state = CHAT;
+                state = TEMP;
             }
             break;
         }
@@ -71,7 +70,7 @@ void KeywordCB(const std_msgs::String::ConstPtr &msg)
             if(msg->data.find("参观") == 0) {
                 LabCruiseScript.CruiseQueue();
                 LabCruiseScript.ShowActs();
-                LabCruiseScript.Main();
+                for( int pNum = 0; pNum < ACTNUM - 1; pNum++) LabCruiseScript.Main();
                 state = CRUISE;
             }
             int KeyWordIndex;
@@ -86,9 +85,16 @@ void KeywordCB(const std_msgs::String::ConstPtr &msg)
             LabCruiseScript.Main();
             break;
         }
+        case TEMP:{
+            int AmbTemp, ObjTemp;
+            ReadTemp(AmbTemp, ObjTemp);
+            LabCruiseScript.TempQueue(AmbTemp, ObjTemp);
+            LabCruiseScript.Main();
+            LabCruiseScript.Main();
+            state = CHAT;
+        }
         case CRUISE:{
-            for(int j=0;j<20;j++) std::cout<< "CRUISING\n"<<endl;
-            for( int pNum = 0; pNum < PointNum - 1; pNum++) LabCruiseScript.Main();
+            for(int j=0;j<20;j++) std::cout<< "CRUISING\n"<<endl;   
             break;
         }
         default:{
@@ -104,6 +110,7 @@ int main(int argc, char **argv)
     LabCruiseScript.Init();
     LabCruiseScript.SpeakQueue();
     LabCruiseScript.ShowActs();
+    LabCruiseScript.Main();
     LabCruiseScript.Main();
     LabCruiseScript.Main();
     state = CHAT;
