@@ -44,7 +44,7 @@
 const int ACTNUM = 5;
 
 //modify this if needed
-const int ActQueueLength = 6;
+const int ActQueueLength = 15;
 
 static CGotoPoint goto_point_script;
 

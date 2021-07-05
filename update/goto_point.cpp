@@ -46,15 +46,105 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
 
     newAct.nAct = ACT_GOTO;
     newAct.strTarget = GoalName;
-    // newAct.nDuration = 5;
     arAct.push_back(newAct);
     // add your act code here and modify ActQueueLength 
     // like this
     if(ActName == "播放"){
         newAct.nAct = ACT_PLAY_VIDEO;
-        newAct.strTarget = "/home/pzs/record.mp4";
+        newAct.strTarget = "/home/pzs/notice.mp4";
         newAct.nLoopPlay = 1;
         newAct.nDuration = 7;
+        arAct.push_back(newAct);
+    }
+    else if(ActName == "抓取"){
+        //wait for implement
+    }
+    else if(ActName == "拍照"){
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/1.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.0;
+        newAct.fLinear_y = 0.0;
+        newAct.fAngular_z = 1.57;
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/2.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.0;
+        newAct.fLinear_y = 0.0;
+        newAct.fAngular_z = 1.57;
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/3.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.0;
+        newAct.fLinear_y = 0.0;
+        newAct.fAngular_z = 1.57;
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/4.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.0;
+        newAct.fLinear_y = 0.0;
+        newAct.fAngular_z = 0.0;
+        arAct.push_back(newAct);
+    }
+    else if(ActName == "录制视频"){
+        newAct.nAct = ACT_REC_VIDEO;
+        newAct.nDuration = 5;
+        newAct.strTarget = "/home/pzs/record.avi";
+        arAct.push_back(newAct);
+    }
+    else if(ActName == "三维重建"){
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/1.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.5;
+        newAct.fLinear_y = 0.5;
+        newAct.fAngular_z = 1.57;
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/2.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.5;
+        newAct.fLinear_y = 0.5;
+        newAct.fAngular_z = 1.57;
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/3.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.5;
+        newAct.fLinear_y = 0.5;
+        newAct.fAngular_z = 1.57;
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_CAP_IMAGE;
+        newAct.strTarget = "/home/pzs/4.jpg";
+        arAct.push_back(newAct);
+
+        newAct.nAct = ACT_MOVE;
+        newAct.fLinear_x = 0.0;
+        newAct.fLinear_y = 0.0;
+        newAct.fAngular_z = 0.0;
         arAct.push_back(newAct);
     }
     else{
