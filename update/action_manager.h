@@ -37,6 +37,7 @@
 #define WP_ACTION_MANAGER_H
 #include "stdio.h"
 #include "struct.h"
+#include "FilePath.h"
 #include <vector>
 #include <sstream>
 #include <string.h>

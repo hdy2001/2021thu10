@@ -36,7 +36,6 @@
 #include "action_manager.h"
 
 
-
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 static ros::Publisher spk_pub;
 static ros::Publisher vel_pub;
@@ -56,7 +55,7 @@ static int nToRecoFrame = 100;
 
 
 int CActionManager::ReadWayPoints(vector<MyPoint> &ps){
-    FILE *fp = fopen("../waypoints.txt", "r");
+    FILE *fp = fopen((DataPath + "waypoints.txt").c_str() , "r");
     if(fp == NULL) 
     {
         for(int i=0; i< PRINT_NUM; i++)
@@ -79,6 +78,7 @@ int CActionManager::ReadWayPoints(vector<MyPoint> &ps){
         return pNum;
     }
 }
+
 
 CActionManager::CActionManager()
 {
@@ -243,7 +243,7 @@ bool CActionManager::Main()
             FollowSwitch(false, 0);
 			string strGoto = arAct[nCurActIndex].strTarget;
             printf("[ActMgr] %d - Goto %s",nCurActIndex,strGoto.c_str());
-            float x,y;
+            float x,y,z;
             std::string name;
             bool flag = false;
             // srvName.request.name = strGoto;
@@ -256,16 +256,17 @@ bool CActionManager::Main()
                     name = ps[i].name;
                     x = ps[i].pos_x;
                     y = ps[i].pos_y;
+                    z = ps[i].ori_z;
                     flag = true;
                     for(int j=0; j< PRINT_NUM; j++)
                     {
-                        printf("find target point!!! name: %s\n",strGoto);
+                        printf("find target point!!! name: %s\n",strGoto.c_str());
                     }  
                     break;
                 }
             }
             if( !flag ){
-                ROS_ERROR("Failed to find GetWaypointByName in waypoints.txt chech /home/user contain this file\n");
+                ROS_ERROR("Failed to find GetWaypointByName in waypoints.txt\n");
             }
             else{
                 printf("Get_wp_name: name = %s (%.2f,%.2f)", strGoto.c_str(),x,y);
@@ -278,11 +279,16 @@ bool CActionManager::Main()
                 else
                 {
                     move_base_msgs::MoveBaseGoal goal;
+                    tf::Quaternion q;
                     goal.target_pose.header.frame_id = "map";
                     goal.target_pose.header.stamp = ros::Time::now();
-                    goal.target_pose.pose.position.x = x;
-                    goal.target_pose.pose.position.y = y;
-                    goal.target_pose.pose.orientation.w = 1.0;
+                    goal.target_pose.pose.position.x = 1.0;
+                    goal.target_pose.pose.position.y = 1.0;
+                    q.setRPY( 0, 0, 1.57 );
+                    goal.target_pose.pose.orientation.x = q.x();
+                    goal.target_pose.pose.orientation.y = q.y();
+                    goal.target_pose.pose.orientation.z = q.z();
+                    goal.target_pose.pose.orientation.w = q.w();
                     ROS_INFO("Sending goal name = %s (%.2f,%.2f)", strGoto.c_str(),x,y);
                     ac.sendGoal(goal);
                     ac.waitForResult();
@@ -292,37 +298,6 @@ bool CActionManager::Main()
                         ROS_INFO("Failed to get to %s ...",strGoto.c_str() );
                 }
             }
-            // if (cliGetWPName.call(srvName))
-            // {
-            //     // std::string name = srvName.response.name;
-            //     // float x = srvName.response.pose.position.x;
-            //     // float y = srvName.response.pose.position.y;
-            //     ROS_INFO("Get_wp_name: name = %s (%.2f,%.2f)", strGoto.c_str(),x,y);
-
-            //     MoveBaseClient ac("move_base", true);
-            //     if(!ac.waitForServer(ros::Duration(5.0)))
-            //     {
-            //         ROS_INFO("The move_base action server is no running. action abort...");
-            //     }
-            //     else
-            //     {
-            //         move_base_msgs::MoveBaseGoal goal;
-            //         goal.target_pose.header.frame_id = "map";
-            //         goal.target_pose.header.stamp = ros::Time::now();
-            //         goal.target_pose.pose = srvName.response.pose;
-            //         ac.sendGoal(goal);
-            //         ac.waitForResult();
-            //         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-            //             ROS_INFO("Arrived at %s!",strGoto.c_str());
-            //         else
-            //             ROS_INFO("Failed to get to %s ...",strGoto.c_str() );
-            //     }
-                
-            // }
-            // else
-            // {
-            //     ROS_ERROR("Failed to call service GetWaypointByName");
-            // }
             nCurActIndex ++;
         }
 		break;

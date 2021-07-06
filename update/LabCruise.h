@@ -1,6 +1,7 @@
 #ifndef GOTO_POINT_H
 #define GOTO_POINT_H
 #include "action_manager.h"
+#include "FilePath.h"
 #include <sstream>
 #include <std_msgs/String.h>
 
@@ -12,7 +13,7 @@ public:
     void SpeakQueue();
     void ChatQueue(const int KeyWordIndex);
     void CruiseQueue();
-    void TempQueue(int amb, int obj);
+    void TempQueue(float amb, float obj);
 };
 
 #endif //

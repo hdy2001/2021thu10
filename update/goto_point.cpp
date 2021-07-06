@@ -51,7 +51,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
     // like this
     if(ActName == "播放"){
         newAct.nAct = ACT_PLAY_VIDEO;
-        newAct.strTarget = "/home/pzs/notice.mp4";
+        newAct.strTarget = VideoPath + "notice.mp4";
         newAct.nLoopPlay = 1;
         newAct.nDuration = 7;
         arAct.push_back(newAct);
@@ -61,7 +61,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
     }
     else if(ActName == "拍照"){
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/1.jpg";
+        newAct.strTarget = ImagePath + "1.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
@@ -71,7 +71,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/2.jpg";
+        newAct.strTarget = ImagePath + "2.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
@@ -81,7 +81,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/3.jpg";
+        newAct.strTarget = ImagePath + "3.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
@@ -91,7 +91,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/4.jpg";
+        newAct.strTarget = ImagePath + "4.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
@@ -103,12 +103,12 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
     else if(ActName == "录制视频"){
         newAct.nAct = ACT_REC_VIDEO;
         newAct.nDuration = 5;
-        newAct.strTarget = "/home/pzs/record.avi";
+        newAct.strTarget = VideoPath + "Record.avi";
         arAct.push_back(newAct);
     }
     else if(ActName == "三维重建"){
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/1.jpg";
+        newAct.strTarget = ImagePath + "1.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
@@ -118,7 +118,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/2.jpg";
+        newAct.strTarget = ImagePath + "2.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
@@ -128,7 +128,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/3.jpg";
+        newAct.strTarget = ImagePath + "3.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
@@ -138,7 +138,7 @@ void CGotoPoint::ActQueue(const std::string GoalName, const std::string ActName,
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_CAP_IMAGE;
-        newAct.strTarget = "/home/pzs/4.jpg";
+        newAct.strTarget = ImagePath + "4.jpg";
         arAct.push_back(newAct);
 
         newAct.nAct = ACT_MOVE;
