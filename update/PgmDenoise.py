@@ -1,4 +1,10 @@
 # -*- coding:UTF-8 -*-
+# how to use ?
+# make sure the file path is all right (note: you have to create a null file first in JpgPath and PgmWritePath)
+# then add the following in qt slot
+# system("bash -c 'source /opt/ros/kinetic/setup.bash;source ~/catkin_ws/devel/setup.bash; cd path_to_this_file && python PgmDenoise.py; bash'&");
+
+
 import numpy as np
 from matplotlib import pyplot as plt
 from PIL import Image,ImageEnhance,ImageFilter
