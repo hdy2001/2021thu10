@@ -43,34 +43,78 @@
 const int KeyWordNum = 4;
 
 // //modify this if needed
-const int ACTNUM = 8;
-
+const int CQLength = 9;
+const int TQLength = 2;
+const int SQLength = 5;
 static LabCruise LabCruiseScript;
 
 // int flag = 0;
 enum STATE
 {
-    WAIT=1, CHAT, TEMP, CRUISE
+    WAIT=1, CHAT, CRUISE, END
 } state;
 std::string ChatKeyWordList[KeyWordNum] = {"你好", "能做什么", "哪些功能", "家"};
 
-void ReadTemp(int &AmbTemp, int &ObjTemp){
+void ReadTemp(float &AmbTemp, float &ObjTemp){
     //
+    float amb = 0.0;
+    float obj = 0.0;
+    float t1, t2;
+    FILE *fp = fopen("/home/pzs/TempData.txt","r");
+    if(fp == NULL){
+        for(int j=0; j < 20;j++) printf("TempData Open Failed!");
+    }
+    while(fscanf(fp,"%f,%f",&amb,&obj)==2){
+        t1 = amb - (int)amb;
+        t1 = t1 * 10;
+        if(t1 - int(t1) >= 0.5) t1 += 1;
+        t1 = (int)t1;
+        t1 /= 10;
+        t1 += (int)amb;
+        AmbTemp = t1;
+        // AmbTemp = to_string(t1).erase(4);
+
+        t2 = obj - (int)obj;
+        t2 = t2 * 10;
+        if(t2 - int(t2) >= 0.5) t2 += 1;
+        t2 = (int)t2;
+        t2 /= 10;
+        t2 += (int)obj;
+        ObjTemp = t2;
+        // ObjTemp = to_string(t2).erase(4);
+
+        // cout << AmbTemp << endl;
+        // cout << ObjTemp << endl;
+        printf("AmbTemp: %f\n",AmbTemp);
+        printf("ObjTemp: %f\n",ObjTemp);
+    }
+    fclose(fp);
 }
 
 void KeywordCB(const std_msgs::String::ConstPtr &msg)
 {
     switch(state){
         case WAIT:{
-                state = TEMP;
-            }
-            break;
-        }
+                for(int j=0;j<20;j++) printf("WAIT WAIT\n");
+                float AmbTemp, ObjTemp;
+                ReadTemp(AmbTemp, ObjTemp);
+                for(int j=0;j<20;j++) printf("temprature : %f, %f\n", AmbTemp, ObjTemp);
+                LabCruiseScript.TempQueue(AmbTemp, ObjTemp);
+                LabCruiseScript.ShowActs();
+                for(int i = 0; i < TQLength; i++) LabCruiseScript.Main();
+                if(ObjTemp > 37.3) {
+                    LabCruiseScript.Main();
+                    state = END;
+                }
+                else state = CHAT;
+                break;
+            }     
         case CHAT:{
+            for(int j=0;j<20;j++) printf("CHAT CHAT\n");
             if(msg->data.find("参观") == 0) {
                 LabCruiseScript.CruiseQueue();
                 LabCruiseScript.ShowActs();
-                for( int pNum = 0; pNum < ACTNUM - 1; pNum++) LabCruiseScript.Main();
+                for( int pNum = 0; pNum < CQLength ; pNum++) LabCruiseScript.Main();
                 state = CRUISE;
             }
             int KeyWordIndex;
@@ -84,14 +128,6 @@ void KeywordCB(const std_msgs::String::ConstPtr &msg)
             LabCruiseScript.Main();
             LabCruiseScript.Main();
             break;
-        }
-        case TEMP:{
-            int AmbTemp, ObjTemp;
-            ReadTemp(AmbTemp, ObjTemp);
-            LabCruiseScript.TempQueue(AmbTemp, ObjTemp);
-            LabCruiseScript.Main();
-            LabCruiseScript.Main();
-            state = CHAT;
         }
         case CRUISE:{
             for(int j=0;j<20;j++) std::cout<< "CRUISING\n"<<endl;   
@@ -110,10 +146,8 @@ int main(int argc, char **argv)
     LabCruiseScript.Init();
     LabCruiseScript.SpeakQueue();
     LabCruiseScript.ShowActs();
-    LabCruiseScript.Main();
-    LabCruiseScript.Main();
-    LabCruiseScript.Main();
-    state = CHAT;
+    for(int i = 0; i < SQLength; i++) LabCruiseScript.Main();
+    state = WAIT;
     ros::NodeHandle n;
     ros::Rate r(10);
     ros::Subscriber cmd_sub = n.subscribe("/gosomewhere", 10, KeywordCB);
