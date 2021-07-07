@@ -1,0 +1,5 @@
+<launch>
+    <!-- Run script -->
+    <node pkg="wpb_home_apps" type="client" name="client" output="screen"/>
+
+</launch>
