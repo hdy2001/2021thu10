@@ -9,8 +9,8 @@
 - 如何配置
 
 ~~~
-cp vel_pkg ~/catkin_ws
-cp keyboard_pkg ~/catkin_ws
+cp vel_pkg ~/catkin_ws/src
+cp keyboard_pkg ~/catkin_ws/src
 ~~~
 
 实际上，只需要在小智的机载电脑上配置vel_pkg，远程电脑上配置keyboard_pkg即可。
