@@ -13,8 +13,8 @@ void CHomeScript::Queue()
 {
     stAct newAct;
 
-    newAct.nAct = ACT_SPEAK;
-    newAct.strTarget = "科大讯飞语音交互 Demo";
+    newAct.nAct = ACT_ADD_WAYPOINT;
+    newAct.strTarget = "start";
     newAct.nDuration = 5;
     arAct.push_back(newAct);
 

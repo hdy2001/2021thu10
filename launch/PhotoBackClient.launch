@@ -1,0 +1,6 @@
+<launch>
+
+    <!-- Run script -->
+    <node pkg="wpb_home_apps" type="PhotoBackClient" name="PhotoBackClient" output="screen"/>
+
+</launch>

@@ -18,6 +18,7 @@ using namespace std;
 #define ACT_PLAY_VIDEO		102
 #define ACT_CAP_IMAGE		103
 #define ACT_SHOW_IMAGE		104
+#define ACT_BLANK               105
 
 typedef struct stAct
 {

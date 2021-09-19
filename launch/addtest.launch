@@ -1,31 +1,32 @@
 <launch>
-
   <arg name="model" default="$(find wpb_home_bringup)/urdf/wpb_home.urdf"/>
   <arg name="gui" default="true" />
-  <arg name="rvizconfig" default="$(find wpb_home_apps)/rviz/obj_reco.rviz" />
+  <arg name="rvizconfig" default="$(find wpb_home_tutorials)/rviz/face_detect.rviz" />
 
-  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
   <param name="use_gui" value="$(arg gui)"/>
+  <param name="/use_sim_time" value="false"/>
 
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
   <rosparam command="load" file="$(find wpb_home_bringup)/config/wpb_home.yaml" />
   </node>
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  
 
-  <!-- Run xfyun IAT -->
-  <node pkg="xfyun_waterplus" type="iat_node" name="xfyun_iat_node" output="screen">
-      <param name="cn" type="bool" value="false"/>
-      <param name="start" type="bool" value="true"/>
-  </node>
+  <!--- Run map tools -->
+  <include file="$(find waterplus_map_tools)/launch/wpb_home_nav_test.launch" />
+
+  <!--- Run servers -->
+  <include file="$(find wpb_home_behaviors)/launch/all_servers.launch" />
+
+  <!--- speech recognition -->
+  <include file="$(find xfyun_waterplus)/launch/iat_cn.launch" />
+
   <!-- Run xfyun TTS -->
   <node pkg="xfyun_waterplus" type="tts_node" name="xfyun_tts_node" /> 
   <!-- Run sound_play -->
   <node name="soundplay_node" pkg="sound_play" type="soundplay_node.py"/>
-  <!-- Run object_recognition -->
-  <node pkg="wpb_home_apps" type="object_recognition" name="object_recognition" output="screen" />
+  
 
-  <!--- Run Kinect -->
   <!--************************ kinect ************************-->
   <arg name="base_name"         default="kinect2"/>
   <arg name="sensor"            default=""/>
@@ -108,15 +109,24 @@
     <param name="worker_threads"    type="int"    value="$(arg worker_threads)"/>
   </node>
 
-   <!-- qhd point cloud (960 x 540) -->
-  <node pkg="nodelet" type="nodelet" name="$(arg base_name)_points_xyzrgb_qhd" machine="$(arg machine)"
+   <!-- hd point cloud (1920 x 1080) -->
+  <node pkg="nodelet" type="nodelet" name="$(arg base_name)_points_xyzrgb_hd" machine="$(arg machine)"
         args="load depth_image_proc/point_cloud_xyzrgb $(arg nodelet_manager)" respawn="$(arg respawn)">
-    <remap from="rgb/camera_info"             to="$(arg base_name)/qhd/camera_info"/>
-    <remap from="rgb/image_rect_color"        to="$(arg base_name)/qhd/image_color_rect"/>
-    <remap from="depth_registered/image_rect" to="$(arg base_name)/qhd/image_depth_rect"/>
-    <remap from="depth_registered/points"     to="$(arg base_name)/qhd/points"/>
+    <remap from="rgb/camera_info"             to="$(arg base_name)/hd/camera_info"/>
+    <remap from="rgb/image_rect_color"        to="$(arg base_name)/hd/image_color_rect"/>
+    <remap from="depth_registered/image_rect" to="$(arg base_name)/hd/image_depth_rect"/>
+    <remap from="depth_registered/points"     to="$(arg base_name)/hd/points"/>
     <param name="queue_size" type="int" value="$(arg queue_size)"/>
   </node>
   <!--************************ end ************************-->
+
+  <arg name="face_cascade_file" default="$(find wpb_home_tutorials)/config/haarcascade_frontalface_alt.xml" />
+
+  <node name="wpb_home_face_detect_3d" pkg="wpb_home_behaviors" type="wpb_home_face_detect_3d" output="screen">
+    <param name="face_cascade_name" value="$(arg face_cascade_file)"/>
+  </node>
+
+  <!-- Run script -->
+  <node pkg="wpb_home_apps" type="add_point_test" name="add_point_test" output="screen"/>
 
 </launch>
