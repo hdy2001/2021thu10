@@ -35,7 +35,9 @@
 
 #ifndef WP_ACTION_MANAGER_H
 #define WP_ACTION_MANAGER_H
+#include "stdio.h"
 #include "struct.h"
+#include "FilePath.h"
 #include <vector>
 #include <sstream>
 #include <string.h>
@@ -69,8 +71,17 @@
 #include <actionlib/client/simple_action_client.h>
 #include <waterplus_map_tools/Waypoint.h>
 #include <waterplus_map_tools/GetWaypointByName.h>
-
+using namespace std;
 using namespace cv;
+const int PRINT_NUM = 20;
+
+struct MyPoint{
+    char name[20];
+    float pos_x;
+    float pos_y;
+    float ori_z;
+};
+
 class CActionManager
 {
 public:
@@ -78,13 +89,14 @@ public:
 	~CActionManager();
 
     vector<stAct> arAct;
+	vector<MyPoint> ps;
+	int PointNum;
 	int nCurActIndex;
 	int nCurActCode;
 	std::string strListen;
 	int nVideoFrameCount;
 	VideoWriter* pVW;
 	std::string strImage;
-	bool bCaptureImage;
 
 	ros::Subscriber grab_result_sub;
 	ros::Subscriber pass_result_sub;
@@ -99,6 +111,7 @@ public:
 	void ProcColorCB(const sensor_msgs::ImageConstPtr& msg);
  	void GrabResultCallback(const std_msgs::String::ConstPtr& res);
 	void PassResultCallback(const std_msgs::String::ConstPtr& res);
+	int ReadWayPoints(vector<MyPoint>& ps);
 };
 
 #endif // WP_ACTION_MANAGER_H

@@ -8,7 +8,7 @@
 
   <!-- Run xfyun IAT -->
   <node pkg="xfyun_waterplus" type="iat_node" name="xfyun_iat_node" output="screen">
-        <param name="cn" type="bool" value="false"/>
+        <param name="cn" type="bool" value="true"/>
         <param name="start" type="bool" value="true"/>
   </node>
   <!-- Run xfyun TTS -->
