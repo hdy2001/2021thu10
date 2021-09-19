@@ -53,6 +53,37 @@ static std_msgs::String behavior_msg;
 static ros::Publisher add_waypoint_pub;
 static int nToRecoFrame = 100;
 
+
+int CActionManager::ReadWayPoints(vector<MyPoint> &ps){
+    for(int i=0; i< PRINT_NUM; i++){
+            printf("hahaha\n");
+    }
+    // FILE *fp = fopen("/home/ryp/catkin_ws/Data/waypoints.txt","r");
+    // if(fp == NULL) 
+    // {
+    //     for(int i=0; i< PRINT_NUM; i++)
+    //     {
+    //         printf("action manager FILE waypoints.txt open failed!\n");
+    //         printf("in action manager.cpp line 64\n");
+    //     }
+    //     fclose(fp);
+    //     return 0;
+    // }
+    // else 
+    // {
+    //     int pNum = 0;
+    //     MyPoint p;
+    //     while(fscanf(fp, "%s %f %f %f", p.name, &p.pos_x, &p.pos_y, &p.ori_z) == 4)
+    //     {
+    //         ps.push_back(p);
+    //         pNum++;
+    //     } 
+    //     fclose(fp);
+    //     return pNum;
+    // }
+}
+
+
 CActionManager::CActionManager()
 {
     nCurActIndex = 0;
@@ -62,8 +93,11 @@ CActionManager::CActionManager()
     bPassDone = false;
     nVideoFrameCount = 0;
     pVW = NULL;
-    bCaptureImage = false;
-    strImage = "/home/robot/image.jpg";
+    std::vector<MyPoint> ps;
+    PointNum = ReadWayPoints(ps);
+    for(int i=0; i< PRINT_NUM * 10; i++){
+        printf("init action manager\n");
+    }
 }
 
 CActionManager::~CActionManager()
@@ -94,14 +128,6 @@ void CActionManager::ProcColorCB(const sensor_msgs::ImageConstPtr& msg)
     {
         ROS_INFO("[rec video - %d]...",nVideoFrameCount);
         *pVW << image;
-        nVideoFrameCount ++;
-    }
-
-    if(bCaptureImage == true)
-    {
-        ROS_INFO("[Captrue Image] Filename = %s",strImage.c_str());
-        imwrite(strImage,cv_ptr->image);
-        bCaptureImage = false;
         nVideoFrameCount ++;
     }
 
@@ -218,31 +244,65 @@ bool CActionManager::Main()
     nCurActCode = arAct[nCurActIndex].nAct;
     switch (nCurActCode)
 	{
+    //lct add new ACT named ACT_BLANK to support face_detect
+    case ACT_BLANK:
+        if(nLastActCode != ACT_BLANK)
+        {
+            printf("Wait for following");//to wait for next action
+        }
+    //pzs modified ACT_GOTO to supoort load point from txt instead of xml 
 	case ACT_GOTO:
 		if (nLastActCode != ACT_GOTO)
 		{
             FollowSwitch(false, 0);
 			string strGoto = arAct[nCurActIndex].strTarget;
             printf("[ActMgr] %d - Goto %s",nCurActIndex,strGoto.c_str());
-            srvName.request.name = strGoto;
-            if (cliGetWPName.call(srvName))
-            {
-                std::string name = srvName.response.name;
-                float x = srvName.response.pose.position.x;
-                float y = srvName.response.pose.position.y;
-                ROS_INFO("Get_wp_name: name = %s (%.2f,%.2f)", strGoto.c_str(),x,y);
+            float x,y,z;
+            std::string name;
+            bool flag = false;
+            for(int i = 0; i < ps.size(); i++){
+                for(int j=0; j< PRINT_NUM; j++)
+                {
+                    printf("point: %s %f, %f, %f loaded to memory!\n",ps[i].name,ps[i].pos_x, ps[i].pos_y, ps[i].ori_z);
+                }  
+                if(ps[i].name == strGoto){
+                    name = ps[i].name;
+                    x = ps[i].pos_x;
+                    y = ps[i].pos_y;
+                    z = ps[i].ori_z;
+                    flag = true;
+                    for(int j=0; j< PRINT_NUM; j++)
+                    {
+                        printf("find target point!!! name: %s\n",strGoto.c_str());
+                    }  
+                    break;
+                }
+            }
+            if( !flag ){
+                ROS_ERROR("Failed to find GetWaypointByName in waypoints.txt\n");
+            }
+            else{
+                printf("Get_wp_name: name = %s (%.2f,%.2f)", strGoto.c_str(),x,y);
+                // ROS_INFO("Get_wp_name: name = %s (%.2f,%.2f)", strGoto.c_str(),x,y);
 
                 MoveBaseClient ac("move_base", true);
-                if(!ac.waitForServer(ros::Duration(5.0)))
-                {
+                if(!ac.waitForServer(ros::Duration(5.0))){
                     ROS_INFO("The move_base action server is no running. action abort...");
                 }
                 else
                 {
                     move_base_msgs::MoveBaseGoal goal;
+                    tf::Quaternion q;
                     goal.target_pose.header.frame_id = "map";
                     goal.target_pose.header.stamp = ros::Time::now();
-                    goal.target_pose.pose = srvName.response.pose;
+                    goal.target_pose.pose.position.x = x;
+                    goal.target_pose.pose.position.y = y;
+                    q.setRPY( 0, 0, z );
+                    goal.target_pose.pose.orientation.x = q.x();
+                    goal.target_pose.pose.orientation.y = q.y();
+                    goal.target_pose.pose.orientation.z = q.z();
+                    goal.target_pose.pose.orientation.w = q.w();
+                    ROS_INFO("Sending goal name = %s (%.2f,%.2f)", strGoto.c_str(),x,y);
                     ac.sendGoal(goal);
                     ac.waitForResult();
                     if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
@@ -250,11 +310,6 @@ bool CActionManager::Main()
                     else
                         ROS_INFO("Failed to get to %s ...",strGoto.c_str() );
                 }
-                
-            }
-            else
-            {
-                ROS_ERROR("Failed to call service GetWaypointByName");
             }
             nCurActIndex ++;
         }
@@ -396,7 +451,7 @@ bool CActionManager::Main()
 		{
             printf("[ActMgr] %d - play video \n", nCurActIndex);
             std::stringstream ss;
-            ss << "/home/robot/catkin_ws/src/wpb_home_apps/tools/ffplay -v 0 -loop " << arAct[nCurActIndex].nLoopPlay << " -i " << arAct[nCurActIndex].strTarget;
+            ss << "ffplay -v 0 -loop " << arAct[nCurActIndex].nLoopPlay << " -i " << arAct[nCurActIndex].strTarget;
             system(ss.str().c_str());
 
             usleep(arAct[nCurActIndex].nDuration*1000*1000);
@@ -410,7 +465,6 @@ bool CActionManager::Main()
             printf("[ActMgr] %d - capture image \n", nCurActIndex);
             nVideoFrameCount = 0;
             strImage = arAct[nCurActIndex].strTarget;
-            bCaptureImage = true;
 		}
         if ( nVideoFrameCount > 0)
         {
@@ -498,21 +552,6 @@ string ActionText(stAct* inAct)
         stringStream << inAct->fFollowDist;
         std::string retStr = stringStream.str();
         ActText += retStr;
-    }
-    if(inAct->nAct == ACT_REC_VIDEO)
-    {
-        ActText = "拍摄视频 ";
-        ActText += inAct->strTarget;
-    }
-    if(inAct->nAct == ACT_PLAY_VIDEO)
-    {
-        ActText = "播放视频 ";
-        ActText += inAct->strTarget;
-    }
-    if(inAct->nAct == ACT_CAP_IMAGE)
-    {
-        ActText = "保存视觉图像 ";
-        ActText += inAct->strTarget;
     }
     return ActText;
 }
